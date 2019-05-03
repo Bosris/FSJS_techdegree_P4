@@ -1,9 +1,10 @@
 /* Treehouse FSJS Techdegree
  * Project 4 - OOP Game App
  * app.js */
-const phrase = new Phrase();
-const game = new Game();
+let game;
 
-game.phrases.forEach((phrase, index) => {
-  console.log(`Phrase ${index} - phrase: ${phrase.phrase}`);
+const buttonReset = document.getElementById("btn__reset");
+buttonReset.addEventListener("click", () => {
+  game = new Game();
+  game.startGame();
 });
