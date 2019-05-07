@@ -33,8 +33,29 @@ class Game {
    * Begins game by selecting a random phrase and displaying it to user
    */
   startGame() {
+    //resets the keys and the phrase and hearts
+    const removePhrases = document.querySelector("#phrase ul");
+    if (removePhrases.hasChildNodes) {
+      while (removePhrases.firstChild) {
+        removePhrases.removeChild(removePhrases.firstChild);
+      }
+      this.missed = 0;
+      let buttons = document.querySelectorAll(".key");
+      buttons.forEach(element => {
+        element.classList.remove("wrong");
+        element.classList.remove("chosen");
+        element.disabled = false;
+      });
+      let heartIMG = document.querySelectorAll(".tries");
+      heartIMG.forEach(element => {
+        element.innerHTML =
+          '<img src="images/liveHeart.png" alt="Heart Icon" height="35" width="30"></li>';
+      });
+    }
     const overlay = document.getElementById("overlay");
     overlay.style.display = "none";
+    overlay.classList.remove("lose");
+    overlay.classList.remove("win");
     this.activePhrase = this.getRandomPhrase();
     this.activePhrase.addPhraseToDisplay();
   }
@@ -43,7 +64,38 @@ class Game {
    * @param (HTMLButtonElement) button - The clicked button element
    */
   handleInteraction(button) {
-    button.disabled = true;
+    if (typeof button != "string") {
+      button.disabled = true;
+      if (this.activePhrase.phrase.includes(button.innerHTML)) {
+        button.classList.add("chosen");
+        this.activePhrase.showMatchedLetter(button.innerHTML);
+        if (this.checkForWin()) {
+          gameover(true);
+        }
+      } else {
+        button.classList.add("wrong");
+        this.removeLife();
+      }
+    } else {
+      let keys = document.querySelectorAll(".key");
+      keys.forEach(element => {
+        if (element.innerHTML === button) {
+          if (element.disabled === false) {
+            element.disabled = true;
+            if (this.activePhrase.phrase.includes(button)) {
+              element.classList.add("chosen");
+              this.activePhrase.showMatchedLetter(button);
+              if (this.checkForWin()) {
+                gameover(true);
+              }
+            } else {
+              element.classList.add("wrong");
+              this.removeLife();
+            }
+          }
+        }
+      });
+    }
   }
   /**
    * Checks for winning move
