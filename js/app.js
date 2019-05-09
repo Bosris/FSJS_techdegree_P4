@@ -1,17 +1,22 @@
 /* Treehouse FSJS Techdegree
  * Project 4 - OOP Game App
  * app.js */
-const game = new Game();
+let game;
+let firstGame = true;
 
 const buttonReset = document.getElementById("btn__reset");
 buttonReset.addEventListener("click", () => {
+  game = new Game();
   game.startGame();
-  let keys = document.querySelectorAll(".key");
-  keys.forEach(element => {
-    element.addEventListener("click", e => {
-      game.handleInteraction(e.target);
+  if (firstGame) {
+    firstGame = false;
+    let keys = document.querySelectorAll(".key");
+    keys.forEach(element => {
+      element.addEventListener("click", e => {
+        game.handleInteraction(e.target);
+      });
     });
-  });
+  }
   document.addEventListener("keypress", function(event) {
     console.log(event);
     if (event.keyCode >= 65 && event.keyCode <= 90) {

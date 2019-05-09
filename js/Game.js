@@ -35,11 +35,11 @@ class Game {
   startGame() {
     //resets the keys and the phrase and hearts
     const removePhrases = document.querySelector("#phrase ul");
+    this.missed = 0;
     if (removePhrases.hasChildNodes) {
       while (removePhrases.firstChild) {
         removePhrases.removeChild(removePhrases.firstChild);
       }
-      this.missed = 0;
       let buttons = document.querySelectorAll(".key");
       buttons.forEach(element => {
         element.classList.remove("wrong");
@@ -68,6 +68,9 @@ class Game {
       button.disabled = true;
       if (this.activePhrase.phrase.includes(button.innerHTML)) {
         button.classList.add("chosen");
+        let audio = new Audio("./audio/good.wav");
+        audio.volume = 0.04;
+        audio.play();
         this.activePhrase.showMatchedLetter(button.innerHTML);
         if (this.checkForWin()) {
           gameover(true);
@@ -75,6 +78,9 @@ class Game {
       } else {
         button.classList.add("wrong");
         this.removeLife();
+        let audio = new Audio("./audio/wrong.wav");
+        audio.volume = 0.04;
+        audio.play();
       }
     } else {
       let keys = document.querySelectorAll(".key");
@@ -84,6 +90,10 @@ class Game {
             element.disabled = true;
             if (this.activePhrase.phrase.includes(button)) {
               element.classList.add("chosen");
+              let audio = new Audio("./audio/good.wav");
+              audio.pause();
+              audio.volume = 0.04;
+              audio.play();
               this.activePhrase.showMatchedLetter(button);
               if (this.checkForWin()) {
                 gameover(true);
@@ -91,6 +101,10 @@ class Game {
             } else {
               element.classList.add("wrong");
               this.removeLife();
+              let audio = new Audio("./audio/wrong.wav");
+              audio.pause();
+              audio.volume = 0.04;
+              audio.play();
             }
           }
         }
@@ -116,10 +130,11 @@ class Game {
    * Checks if player has remaining lives and ends game if player is out
    */
   removeLife() {
-    this.missed++;
+    console.log(this.missed);
     let life = document.querySelectorAll("li img");
-    life[this.missed - 1].outerHTML =
+    life[this.missed].outerHTML =
       '<img src="images/lostHeart.png" alt="Heart Icon" height="35" width="30"></li>';
+    this.missed++;
     if (this.missed === 5) {
       this.gameOver(false);
     }
@@ -135,10 +150,16 @@ class Game {
       overlay.classList.remove("start");
       overlay.classList.add("win");
       gameMessage.innerHTML = "You Win!";
+      let audio = new Audio("./audio/success.wav");
+      audio.volume = 0.09;
+      audio.play();
     } else {
       overlay.classList.remove("start");
       overlay.classList.add("lose");
       gameMessage.innerHTML = "You Lose!";
+      let audio = new Audio("./audio/game over.wav");
+      audio.volume = 0.2;
+      audio.play();
     }
   }
 }
